@@ -1,0 +1,43 @@
+/* Loader.css - three-dot rotating / bouncing loader */
+.loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--dot-size) / 2);
+  padding: 8px;
+  user-select: none;
+}
+
+/* each dot */
+.dot {
+  width: var(--dot-size);
+  height: var(--dot-size);
+  background-color: #007bff;
+  border-radius: 50%;
+  display: inline-block;
+  transform-origin: center;
+  animation: loader-bounce 1s infinite ease-in-out;
+  opacity: 0.95;
+}
+
+/* staggered delays */
+.dot1 { animation-delay: 0s; }
+.dot2 { animation-delay: 0.15s; }
+.dot3 { animation-delay: 0.3s; }
+
+/* bounce + slight scale for a smooth effect */
+@keyframes loader-bounce {
+  0%   { transform: translateY(0) scale(1); opacity: 0.6; }
+  25%  { transform: translateY(-8px) scale(1.15); opacity: 1; }
+  50%  { transform: translateY(0) scale(1); opacity: 0.9; }
+  75%  { transform: translateY(-4px) scale(1.08); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 0.6; }
+}
+
+/* optional: make loader centered block when used alone */
+.loader.center {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 24px 0;
+}
