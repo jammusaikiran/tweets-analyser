@@ -61,33 +61,31 @@ import re
 
 def ask_gemini(prompt: str, user_id: str = None) -> str:
     """
-    Smarter chat bot:
-    - Recognizes greetings and intros
-    - Still enforces election-only responses
-    - Optionally saves each query/response to chat history for memory
+    Smarter bot:
+    - Handles greetings & intros
+    - Broadens election-related context to include leaders, parties, constituencies, elections
+    - Saves conversation to DB
     """
     try:
         text = (prompt or "").strip()
         normalized = text.lower()
 
-        # Smarter greeting detection using regex
-        greeting_patterns = [
-            r"\bhi\b", r"\bhello\b", r"\bhey\b", r"\bhii\b", r"\bhey there\b"
-        ]
-        intro_patterns = [
-            r"who are you", r"what is your name", r"identify yourself"
-        ]
+        # Greeting detection
+        greeting_patterns = [r"\bhi\b", r"\bhello\b", r"\bhey\b", r"\bhii\b", r"\bhey there\b"]
+        intro_patterns = [r"who are you", r"what is your name", r"identify yourself"]
 
         if any(re.search(pat, normalized) for pat in greeting_patterns):
             bot_response = "Hi! I am Electo Assistant. How can I help you regarding elections today?"
         elif any(re.search(pat, normalized) for pat in intro_patterns):
             bot_response = "I am Electo Assistant, your AI assistant for election-related queries."
         else:
-            # Election-only guard
+            # Broader election context
             system_guard = (
-                "You are an AI psephology assistant. You must answer only queries related to "
-                "elections, voting, parties, candidates, constituencies, or electoral history/policy. "
-                "If the query is unrelated, reply exactly: 'I can only answer election-related queries.'"
+                "You are an AI psephology assistant. You answer queries related to elections, voting, "
+                "political parties, candidates, constituencies, election results, government leaders, "
+                "or electoral history/policies. You can also answer questions about current leaders or PM "
+                "if relevant to elections. If the query is unrelated, reply: "
+                "'I can only answer election-related queries.'"
             )
             full_prompt = f"{system_guard}\n\nUser query: {text}"
             resp = _gemini_model.generate_content(full_prompt)
@@ -107,6 +105,7 @@ def ask_gemini(prompt: str, user_id: str = None) -> str:
     except Exception as e:
         print("Gemini Error:", e)
         return "Sorry, I'm facing issues fetching the answer. Please try again later."
+
 
 
 # -------------------------------
