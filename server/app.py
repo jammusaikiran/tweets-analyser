@@ -57,25 +57,57 @@ chats_col = db["chats"]
 genai.configure(api_key=GEMINI_API_KEY)
 _gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
-def ask_gemini(prompt: str) -> str:
+import re
+
+def ask_gemini(prompt: str, user_id: str = None) -> str:
     """
-    Election-only guard + Gemini response.
+    Smarter chat bot:
+    - Recognizes greetings and intros
+    - Still enforces election-only responses
+    - Optionally saves each query/response to chat history for memory
     """
     try:
-        system_guard = (
-            "You are an AI psephology assistant. You must answer only queries related to "
-            "elections, voting, parties, candidates, constituencies, or electoral history/policy. "
-            "If the query is unrelated, reply exactly: 'I can only answer election-related queries.'"
-        )
-        full_prompt = f"{system_guard}\n\nUser query: {prompt}"
-        resp = _gemini_model.generate_content(full_prompt)
-        txt = (resp.text or "").strip()
-        if not txt:
-            return "I can only answer election-related queries."
-        return txt
+        text = (prompt or "").strip()
+        normalized = text.lower()
+
+        # Smarter greeting detection using regex
+        greeting_patterns = [
+            r"\bhi\b", r"\bhello\b", r"\bhey\b", r"\bhii\b", r"\bhey there\b"
+        ]
+        intro_patterns = [
+            r"who are you", r"what is your name", r"identify yourself"
+        ]
+
+        if any(re.search(pat, normalized) for pat in greeting_patterns):
+            bot_response = "Hi! I am Electo Assistant. How can I help you regarding elections today?"
+        elif any(re.search(pat, normalized) for pat in intro_patterns):
+            bot_response = "I am Electo Assistant, your AI assistant for election-related queries."
+        else:
+            # Election-only guard
+            system_guard = (
+                "You are an AI psephology assistant. You must answer only queries related to "
+                "elections, voting, parties, candidates, constituencies, or electoral history/policy. "
+                "If the query is unrelated, reply exactly: 'I can only answer election-related queries.'"
+            )
+            full_prompt = f"{system_guard}\n\nUser query: {text}"
+            resp = _gemini_model.generate_content(full_prompt)
+            bot_response = (resp.text or "").strip() or "I can only answer election-related queries."
+
+        # Save query + response to chat history if user_id provided
+        if user_id:
+            chats_col.insert_one({
+                "user_id": user_id,
+                "date": datetime.utcnow(),
+                "question": text,
+                "answer": bot_response
+            })
+
+        return bot_response
+
     except Exception as e:
         print("Gemini Error:", e)
         return "Sorry, I'm facing issues fetching the answer. Please try again later."
+
 
 # -------------------------------
 # Parties & Sentiment (in-memory, no disk)

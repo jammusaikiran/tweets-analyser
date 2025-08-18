@@ -20,19 +20,12 @@ const NationalParties = () => {
 
   return (
     <div className="w-screen min-h-screen flex flex-col bg-gradient-to-r from-indigo-100 via-blue-50 to-cyan-100 font-sans">
-      {/* Top Navbar (Mobile & Desktop) */}
-      {/* <div className="flex justify-between items-center px-4 py-3 bg-indigo-600 text-white shadow-lg fixed top-0 left-0 right-0 z-50">
-        <h1 className="text-lg font-bold">P-LLM</h1>
-        <div className="flex space-x-2">
-            <button className="px-4 py-1 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors">Login</button>
-            <button className="px-4 py-1 bg-green-500 hover:bg-green-600 rounded-lg transition-colors">Register</button>
-        </div>
-      </div> */}
-
-      <div className="flex flex-grow w-full mt-[52px] md:mt-[60px]">
+      <div className="flex flex-grow w-full mt-[52px] md:mt-[60px] h-[calc(100vh-60px)]">
         {/* Sidebar (Desktop only) */}
-        <div className="hidden md:block w-1/4 lg:w-1/5 border-r bg-white shadow-lg overflow-y-auto min-h-screen">
-          <h2 className="text-xl font-semibold p-4 border-b border-gray-200">National Parties</h2>
+        <div className="hidden md:flex flex-col w-1/4 lg:w-1/5 border-r bg-white shadow-lg overflow-y-auto h-full">
+          <h2 className="text-xl font-semibold p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
+            National Parties
+          </h2>
           <ul>
             {parties.map((party) => (
               <li
@@ -51,7 +44,7 @@ const NationalParties = () => {
         </div>
 
         {/* Right Panel */}
-        <div className="flex-1 p-6 md:p-8 overflow-y-auto">
+        <div className="flex-1 p-6 md:p-8 flex items-center justify-center">
           <AnimatePresence mode="wait">
             {selectedParty ? (
               <motion.div
@@ -60,7 +53,7 @@ const NationalParties = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
-                className="bg-white shadow-xl rounded-2xl p-6 md:p-10 flex flex-col items-center max-w-4xl mx-auto"
+                className="bg-white shadow-xl rounded-2xl p-6 md:p-10 max-w-4xl w-full flex flex-col items-center"
               >
                 <h2 className="text-2xl md:text-3xl font-bold mb-4 text-indigo-700 text-center">
                   {selectedParty.name}
@@ -103,7 +96,7 @@ const NationalParties = () => {
               className="absolute left-0 top-0 bottom-0 w-64 bg-white shadow-lg overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
+              <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200 sticky top-0 bg-white z-10">
                 <h2 className="font-semibold text-lg">National Parties</h2>
                 <button className="text-xl" onClick={() => setShowList(false)}>
                   ✕

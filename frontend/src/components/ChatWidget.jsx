@@ -87,7 +87,7 @@ const ChatWidget = ({ close }) => {
     >
       {/* Header */}
       <div className="flex justify-between items-center bg-blue-600 text-white px-4 py-2">
-        <span className="font-semibold text-sm sm:text-base">Chatbot 🤖</span>
+        <span className="font-semibold text-sm sm:text-base">Electo Assistant 🤖</span>
         <div className="space-x-2">
           <button
             onClick={deleteChat}
@@ -108,7 +108,7 @@ const ChatWidget = ({ close }) => {
       <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
         {chatHistory.length === 0 && !loading ? (
           <div className="text-center text-gray-400 mt-10 text-sm sm:text-base">
-            Start chatting with the bot 👋
+            I'm bot to assist you regarding political information 👋
           </div>
         ) : (
           chatHistory.map((c, idx) => (
