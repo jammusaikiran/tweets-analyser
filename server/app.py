@@ -32,7 +32,14 @@ app.config["MONGO_URI"] = os.environ["MONGO_URI"]
 GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 
 # CORS(app, origins=[FRONTEND_ORIGIN, "http://localhost:5173"], supports_credentials=True)
-CORS(app, origins=[FRONTEND_ORIGIN], supports_credentials=True)
+# CORS(app, origins=[FRONTEND_ORIGIN], supports_credentials=True)
+CORS(app,
+     resources={r"/*": {"origins": [
+         "http://localhost:5173",
+         "https://electomate.netlify.app"
+     ]}},
+     supports_credentials=True)
+
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
