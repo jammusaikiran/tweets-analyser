@@ -25,12 +25,14 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 # -------------------------------
 app = Flask(__name__)
 
-FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:5173")
+FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "https://electomate.netlify.app")
+
 app.config["JWT_SECRET_KEY"] = os.environ["JWT_SECRET_KEY"]
 app.config["MONGO_URI"] = os.environ["MONGO_URI"]
 GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 
-CORS(app, origins=[FRONTEND_ORIGIN, "http://localhost:5173"], supports_credentials=True)
+# CORS(app, origins=[FRONTEND_ORIGIN, "http://localhost:5173"], supports_credentials=True)
+CORS(app, origins=[FRONTEND_ORIGIN], supports_credentials=True)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
