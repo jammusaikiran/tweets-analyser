@@ -26,29 +26,29 @@ const SearchNames = () => {
   }, []);
 
   // Handle search
-  const handleSearch = () => {
-    const query = searchQuery.trim().toUpperCase();
-    if (!query) return;
+  // Modify handleSearch to accept a query
+const handleSearch = (query = searchQuery) => {
+  const q = query.trim().toUpperCase();
+  if (!q) return;
 
-    setLoading(true);
-    setTimeout(() => { // simulate small delay for loader
-      const candidate = csvData.find(
-        (row) => row.Candidate && row.Candidate.toUpperCase() === query
+  setLoading(true);
+  setTimeout(() => {
+    const candidate = csvData.find(
+      (row) => row.Candidate && row.Candidate.toUpperCase() === q
+    );
+
+    if (candidate) {
+      setSearchResults([candidate]);
+    } else {
+      const filteredData = csvData.filter(
+        (row) => row.constituency && row.constituency.toUpperCase() === q
       );
+      setSearchResults(filteredData);
+    }
+    setLoading(false);
+  }, 500);
+};
 
-      if (candidate) {
-        setSearchResults([candidate]);
-      } else {
-        const filteredData = csvData.filter(
-          (row) =>
-            row.constituency &&
-            row.constituency.toUpperCase() === query
-        );
-        setSearchResults(filteredData);
-      }
-      setLoading(false);
-    }, 500);
-  };
 
   // Handle input change & suggestions
   const handleInputChange = (e) => {
@@ -73,11 +73,12 @@ const SearchNames = () => {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    const selectedValue = suggestion.split(" (")[0].toUpperCase();
-    setSearchQuery(selectedValue);
-    setSuggestions([]);
-    handleSearch();
-  };
+  const selectedValue = suggestion.split(" (")[0].toUpperCase();
+  setSearchQuery(selectedValue);
+  setSuggestions([]);
+  handleSearch(selectedValue); // ✅ Pass value directly
+};
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch();

@@ -7,15 +7,19 @@ const NationalParties = () => {
   const [selectedParty, setSelectedParty] = useState(null);
 
   useEffect(() => {
-    fetch("https://raw.githubusercontent.com/jammusaikiran/jigad/main/parties.json")
+    fetch(
+      "https://raw.githubusercontent.com/jammusaikiran/jigad/main/parties.json"
+    )
       .then((response) => response.json())
       .then((data) => setParties(data))
-      .catch((error) => console.error("Error fetching the party data:", error));
+      .catch((error) =>
+        console.error("Error fetching the party data:", error)
+      );
   }, []);
 
   const handlePartyClick = (party) => {
     setSelectedParty(party);
-    setShowList(false);
+    setShowList(false); // ✅ closes drawer after selection
   };
 
   return (
@@ -44,7 +48,18 @@ const NationalParties = () => {
         </div>
 
         {/* Right Panel */}
-        <div className="flex-1 p-6 md:p-8 flex items-center justify-center">
+        <div className="flex-1 p-6 md:p-8 flex items-center justify-center relative">
+          {/* Mobile Hamburger Button */}
+          <button
+            className="absolute top-2 left-2 md:hidden p-2 bg-white rounded-lg shadow-md"
+            onClick={() => setShowList(true)}
+          >
+            {/* 3-line hamburger icon */}
+            <div className="w-6 h-0.5 bg-gray-800 mb-1"></div>
+            <div className="w-6 h-0.5 bg-gray-800 mb-1"></div>
+            <div className="w-6 h-0.5 bg-gray-800"></div>
+          </button>
+
           <AnimatePresence mode="wait">
             {selectedParty ? (
               <motion.div
@@ -98,7 +113,10 @@ const NationalParties = () => {
             >
               <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200 sticky top-0 bg-white z-10">
                 <h2 className="font-semibold text-lg">National Parties</h2>
-                <button className="text-xl" onClick={() => setShowList(false)}>
+                <button
+                  className="text-xl"
+                  onClick={() => setShowList(false)}
+                >
                   ✕
                 </button>
               </div>
@@ -111,7 +129,7 @@ const NationalParties = () => {
                         ? "bg-indigo-600 text-white font-medium"
                         : "hover:bg-indigo-100 text-gray-800"
                     }`}
-                    onClick={() => handlePartyClick(party)}
+                    onClick={() => handlePartyClick(party)} // ✅ closes drawer after click
                   >
                     {party.name}
                   </li>
